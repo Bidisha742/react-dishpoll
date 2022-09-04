@@ -1,0 +1,17 @@
+$utilities-bg-colors: (
+  "primary": #3376f6,
+  "primary-light": rgba(140, 211, 251, 0.34),
+  "secondary": #9900cc,
+  "secondary-light": rgba(109, 67, 197, 0.31),
+  "warning": #eebb08,
+  "warning-light": rgba(255, 213, 63, 0.31),
+  "success": #65c98f,
+  "success-light": rgba(144, 211, 63, 0.31),
+  "danger": #cc0033,
+  "danger-light": rgba(229, 32, 32, 0.28),
+  "disabled": #a4a6b3,
+  "muted": rgba(247, 248, 252, 1),
+  "shadow": #c4c4c4,
+  "light": rgb(255, 255, 255, 0.3),
+);
+@import "node_modules/bootstrap/scss/bootstrap";
