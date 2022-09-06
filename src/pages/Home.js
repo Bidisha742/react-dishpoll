@@ -9,17 +9,20 @@ export const Home = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useSelector((state) => state.login);
   const dispatch = useDispatch();
-
   const handleLogout = () => {
     dispatch(logoutAction());
-    navigate("/");
   };
   const [activeTab, setActiveTab] = useState("Tab One");
   return (
     <>
       <nav class="navbar navbar-dark bg-success">
         <h3 className="text-white fw-bold m-3">Syook</h3>
-        <button className="btn  p-2 text-white fs-5 mx-3" onClick={handleLogout}>Logout</button>
+        <button
+          className="btn  p-2 text-white fs-5 mx-3"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </nav>
       <div className="d-flex p-4">
         <div
