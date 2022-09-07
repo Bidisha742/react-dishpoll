@@ -1,32 +1,16 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+
+import { useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 
-export const TabOneContent = () => {
-  const [fetchedData, setFetchedData] = useState([]);
+export const TabOneContent = (props) => {
+
   const [disable, setDisable] = useState(true);
-  const fetchData = () => {
-    axios
-      .get(
-        "https://raw.githubusercontent.com/syook/react-dishpoll/main/db.json"
-      )
-      .then((res) => {
-        setFetchedData(
-          res.data.map((data) => ({
-            ...data,
-            isRank1: false,
-            isRank2: false,
-            isRank3: false,
-          }))
-        );
-      })
-      .catch((err) => {});
-  };
+  const [fetchDishes, setFetchDishes] = useState(props.dish)
 
   const handleSelectRank = (id, rankId) => {
     let result;
     if (rankId === "rank1") {
-      result = fetchedData.map((data) => {
+      result = fetchDishes.map((data) => {
         if (data.id === id) {
           return {
             ...data,
@@ -39,7 +23,7 @@ export const TabOneContent = () => {
         return { ...data, isRank1: false };
       });
     } else if (rankId === "rank2") {
-      result = fetchedData.map((data) => {
+      result = fetchDishes.map((data) => {
         if (data.id === id) {
           return {
             ...data,
@@ -52,7 +36,7 @@ export const TabOneContent = () => {
         return { ...data, isRank2: false };
       });
     } else {
-      result = fetchedData.map((data) => {
+      result = fetchDishes.map((data) => {
         if (data.id === id) {
           return {
             ...data,
@@ -72,11 +56,9 @@ export const TabOneContent = () => {
       setDisable(false);
     }
 
-    setFetchedData(result);
+    setFetchDishes(result);
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
 
   return (
     <Container fluid>
@@ -90,7 +72,7 @@ export const TabOneContent = () => {
         </button>
       </div>
       <Row>
-        {fetchedData.map((data) => (
+        {fetchDishes.map((data) => (
           <Col lg={3} md={6} sm={12}>
             <Card className="p-3 mx-3 my-5">
               <Card.Img

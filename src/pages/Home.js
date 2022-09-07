@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutAction } from "../redux/actions";
@@ -6,13 +7,34 @@ import { TabOneContent } from "./TabContents/TabOneContent";
 import { TabTwoContent } from "./TabContents/TabTwoContent";
 
 export const Home = () => {
-  const navigate = useNavigate();
+ 
   const { isLoggedIn } = useSelector((state) => state.login);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutAction());
   };
   const [activeTab, setActiveTab] = useState("Tab One");
+  const [fetchedData, setFetchedData] = useState([]);
+  const fetchData = () => {
+    axios
+      .get(
+        "https://raw.githubusercontent.com/syook/react-dishpoll/main/db.json"
+      )
+      .then((res) => {
+        setFetchedData(
+          res.data.map((data) => ({
+            ...data,
+            isRank1: false,
+            isRank2: false,
+            isRank3: false,
+          }))
+        );
+      })
+      .catch((err) => {});
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
       <nav class="navbar navbar-dark bg-success">
@@ -50,7 +72,7 @@ export const Home = () => {
           Tab Two
         </div>
       </div>
-      {activeTab === "Tab One" ? <TabOneContent /> : <TabTwoContent />}
+      {activeTab === "Tab One" ? <TabOneContent dish={fetchedData} /> : <TabTwoContent dish={fetchedData.sort((a,b)=>b.points-a.points)} />}
     </>
   );
 };
