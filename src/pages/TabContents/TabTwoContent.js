@@ -6,27 +6,28 @@ export const TabTwoContent = (props) => {
   const [sortedDishes, setSortedDishes] = useState();
 
   useEffect(() => {
-    
-    const tempSorted = [...props.dishes];
-    tempSorted.sort((a, b) => b.points - a.points);
-    const users = localStorage.getItem("users");
-    const userInfo = localStorage.getItem("loggedUser");
-    const loggedInUser = JSON.parse(users).find(
-      (u) => u.id === JSON.parse(userInfo).id
-    );
-    const newDishes = tempSorted.map((dish) => ({
-      ...dish,
-      color:
-        dish.id === loggedInUser.dishRankTwo
-          ? COLORS.two
-          : dish.id === loggedInUser.dishRankOne
-          ? COLORS.one
-          : dish.id === loggedInUser.dishRankThree
-          ? COLORS.three
-          : "white",
-    }));
+    if (props.dishes) {
+      const tempSorted = [...props.dishes];
+      tempSorted.sort((a, b) => b.points - a.points);
+      const users = localStorage.getItem("users");
+      const userInfo = localStorage.getItem("loggedUser");
+      const loggedInUser = JSON.parse(users).find(
+        (u) => u.id === JSON.parse(userInfo).id
+      );
+      const newDishes = tempSorted.map((dish) => ({
+        ...dish,
+        color:
+          dish.id === loggedInUser.dishRankTwo
+            ? COLORS.two
+            : dish.id === loggedInUser.dishRankOne
+            ? COLORS.one
+            : dish.id === loggedInUser.dishRankThree
+            ? COLORS.three
+            : "white",
+      }));
 
-    setSortedDishes(newDishes);
+      setSortedDishes(newDishes);
+    }
   }, [props]);
 
   return (
