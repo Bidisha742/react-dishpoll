@@ -1,20 +1,20 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { logoutAction } from "../redux/actions";
 import { TabOneContent } from "./TabContents/TabOneContent";
 import { TabTwoContent } from "./TabContents/TabTwoContent";
+import dishes from "../assets/db.json";
 
 export const Home = () => {
- 
-  const { isLoggedIn } = useSelector((state) => state.login);
   const dispatch = useDispatch();
   const handleLogout = () => {
+    setActiveTab("Tab One");
+    localStorage.removeItem("loggedUser");
     dispatch(logoutAction());
   };
   const [activeTab, setActiveTab] = useState("Tab One");
-  const [fetchedData, setFetchedData] = useState([]);
+  const [fetchedData, setFetchedData] = useState();
   const fetchData = () => {
     axios
       .get(
@@ -32,9 +32,17 @@ export const Home = () => {
       })
       .catch((err) => {});
   };
+
   useEffect(() => {
     fetchData();
+    if (!localStorage.getItem("dishes")) {
+      localStorage.setItem(
+        "dishes",
+        JSON.stringify(dishes.map((dish) => ({ ...dish, points: 0 })))
+      );
+    }
   }, []);
+
   return (
     <>
       <nav class="navbar navbar-dark bg-success">
@@ -72,7 +80,11 @@ export const Home = () => {
           Tab Two
         </div>
       </div>
-      {activeTab === "Tab One" ? <TabOneContent dish={fetchedData} /> : <TabTwoContent dish={fetchedData.sort((a,b)=>b.points-a.points)} />}
+      {activeTab === "Tab One" && fetchedData ? (
+        <TabOneContent dishes={fetchedData} />
+      ) : (
+        <TabTwoContent dishes={JSON.parse(localStorage.getItem("dishes"))} />
+      )}
     </>
   );
 };

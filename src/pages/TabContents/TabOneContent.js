@@ -1,11 +1,10 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 
 export const TabOneContent = (props) => {
-
   const [disable, setDisable] = useState(true);
-  const [fetchDishes, setFetchDishes] = useState(props.dish)
+  const [fetchDishes, setFetchDishes] = useState(props.dishes);
+  const [storedDishes, setStoredDishes] = useState();
 
   const handleSelectRank = (id, rankId) => {
     let result;
@@ -17,7 +16,6 @@ export const TabOneContent = (props) => {
             isRank1: true,
             isRank2: false,
             isRank3: false,
-            points: data.points + 30,
           };
         }
         return { ...data, isRank1: false };
@@ -30,7 +28,6 @@ export const TabOneContent = (props) => {
             isRank2: true,
             isRank1: false,
             isRank3: false,
-            points: data.points + 20,
           };
         }
         return { ...data, isRank2: false };
@@ -43,7 +40,6 @@ export const TabOneContent = (props) => {
             isRank3: true,
             isRank2: false,
             isRank1: false,
-            points: data.points + 10,
           };
         }
         return { ...data, isRank3: false };
@@ -58,7 +54,67 @@ export const TabOneContent = (props) => {
 
     setFetchDishes(result);
   };
-  
+
+  useEffect(() => {
+    setStoredDishes(JSON.parse(localStorage.getItem("dishes")));
+  }, []);
+
+  const handleSubmitDishes = () => {
+    const selectedDishesId = fetchDishes
+      .filter((dish) => dish.isRank1 || dish.isRank2 || dish.isRank3)
+      .map((dish) => dish.id);
+    const selectedDishes = fetchDishes.filter(
+      (dish) => dish.isRank1 || dish.isRank2 || dish.isRank3
+    );
+    const updatedDishes = storedDishes.map((dish) => {
+      if (selectedDishesId.includes(dish.id)) {
+        const dishFromSelection = fetchDishes.find((d) => d.id === dish.id);
+        return {
+          ...dish,
+          points: dishFromSelection.isRank1
+            ? +dish.points + 30
+            : dishFromSelection.isRank2
+            ? +dish.points + 20
+            : +dish.points + 10,
+        };
+      }
+      return dish;
+    });
+    localStorage.setItem("dishes", JSON.stringify(updatedDishes));
+    const allUsers = localStorage.getItem("users");
+    const loggedInUserId = JSON.parse(localStorage.getItem("loggedUser")).id;
+    const loggedInUser = JSON.parse(allUsers).find(
+      (u) => u.id === loggedInUserId
+    );
+    const reUpdatedDishes = updatedDishes.map((dish) => {
+      return {
+        ...dish,
+        points:
+          loggedInUser.dishRankOne === dish.id
+            ? dish.points - 30
+            : loggedInUser.dishRankTwo === dish.id
+            ? dish.points - 20
+            : loggedInUser.dishRankThree === dish.id
+            ? dish.points - 10
+            : dish.points,
+      };
+    });
+    const updatedUserData = JSON.parse(allUsers).map((user) => {
+      if (user.id === loggedInUserId) {
+        return {
+          ...user,
+          dishRankOne: selectedDishes.find((d) => d.isRank1).id,
+          dishRankTwo: selectedDishes.find((d) => d.isRank2).id,
+          dishRankThree: selectedDishes.find((d) => d.isRank3).id,
+        };
+      }
+      return user;
+    });
+
+    localStorage.setItem("users", JSON.stringify(updatedUserData));
+    localStorage.setItem("dishes", JSON.stringify(reUpdatedDishes));
+    setFetchDishes(props.dishes);
+  };
 
   return (
     <Container fluid>
@@ -67,6 +123,7 @@ export const TabOneContent = (props) => {
         <button
           className="btn bg-success p-2 px-4 text-white fw-bold roundeed-3"
           disabled={disable}
+          onClick={handleSubmitDishes}
         >
           Submit
         </button>
@@ -100,7 +157,7 @@ export const TabOneContent = (props) => {
                 >
                   {data.description}
                 </Card.Text>
-                <div className="btn-group" role="group">
+                <div className="btn-group text-center d-block" role="group">
                   <input
                     type="radio"
                     className="btn-check"

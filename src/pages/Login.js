@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { loginAction } from "../redux/actions";
 import logo from "../assets/logo.png";
 import data from "../assets/users.json";
@@ -11,12 +10,23 @@ export const Login = () => {
   const [password, setPassword] = useState();
   const [showError, setShowError] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [users, setUsers] = useState();
+  //on load storing user data in localstorage to use further.
+  useEffect(() => {
+    //if localstorage is empty on users, then fetch from static json, else use the localstorage data
+    if (localStorage.getItem("users")) {
+      setUsers(JSON.parse(localStorage.getItem("users")));
+    } else {
+      setUsers(data);
+      localStorage.setItem("users", JSON.stringify(data));
+    }
+  }, []);
 
   const handleLogin = () => {
-    const matchUser = data.find((user) => user.username === userName);
+    const matchUser = users.find((user) => user.username === userName);
     if (matchUser && matchUser.password === password) {
       dispatch(loginAction(userName));
+      localStorage.setItem("loggedUser", JSON.stringify(matchUser));
     } else {
       setShowError(true);
     }
@@ -26,10 +36,10 @@ export const Login = () => {
     <>
       <Container style={{ overflowY: "hidden" }}>
         <Card
-          className="rounded-3 p-0 w-50 mx-auto "
+          className="rounded-3 p-0 w-50 mx-auto"
           style={{
             marginTop: "150px",
-            height:'400px'
+            height: "400px",
           }}
         >
           <Row className="m-0 h-100 rounded-3">
@@ -37,7 +47,11 @@ export const Login = () => {
               sm={5}
               className="text-center rounded-3 mx-auto p-5 bg-success"
             >
-              <img src={logo} alt="logo" style={{ height: "70px", marginTop:'50px' }} />
+              <img
+                src={logo}
+                alt="logo"
+                style={{ height: "70px", marginTop: "50px" }}
+              />
               <h2 className="m-3 text-white">LET'S USE</h2>
             </Col>
             <Col sm={7} className="text-center m-auto rounded-3">
@@ -69,12 +83,6 @@ export const Login = () => {
           </Row>
         </Card>
       </Container>
-
-      {/* <div className="w-100 d-flex align-items-center justify-content-center my-4">
-      <div className="card p-3 rounded-3 w-25">
-        
-      </div>
-    </div> */}
     </>
   );
 };
