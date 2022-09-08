@@ -38,7 +38,7 @@ export const TabTwoContent = (props) => {
       <div className="d-flex">
         <Container className="card col-9 m-0">
           <Row className="fw-bold p-3" style={{ fontSize: "20px" }}>
-            <Col sm={1}>Rank</Col>
+            <Col sm={2}>Rank</Col>
             <Col>Dish Name</Col>
             <Col sm={2}>Points</Col>
           </Row>
@@ -52,7 +52,7 @@ export const TabTwoContent = (props) => {
                   color: data.color !== "white" ? "white" : "grey",
                 }}
               >
-                <Col sm={1}>{index + 1}</Col>
+                <Col sm={2}>{index + 1}</Col>
                 <Col>
                   <img
                     src={data.image}
