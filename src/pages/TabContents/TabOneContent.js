@@ -144,6 +144,7 @@ export const TabOneContent = (props) => {
                     fontSize: "20px",
                     textAlign: "center",
                     marginBottom: "20px",
+                    height:'15px'
                   }}
                 >
                   {data.dishName}
@@ -165,6 +166,7 @@ export const TabOneContent = (props) => {
                   />
                   <label
                     className="btn btn-outline-primary"
+                    style={{fontSize:'12px'}}
                     onClick={() => handleSelectRank(data.id, "rank1")}
                   >
                     Rank 1
@@ -177,6 +179,7 @@ export const TabOneContent = (props) => {
                   />
                   <label
                     className="btn btn-outline-success"
+                    style={{fontSize:'12px'}}
                     onClick={() => handleSelectRank(data.id, "rank2")}
                   >
                     Rank 2
@@ -189,6 +192,7 @@ export const TabOneContent = (props) => {
                   />
                   <label
                     className="btn btn-outline-danger"
+                    style={{fontSize:'12px'}}
                     onClick={() => handleSelectRank(data.id, "rank3")}
                   >
                     Rank 3
